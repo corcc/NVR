@@ -8,6 +8,7 @@ import {
 	request
 } from './util';
 import {
+	Cookie,
 	Json,
 	ReservationEnv
 } from './util/type';
@@ -27,7 +28,7 @@ export async function standby({
 			return c.substring(0, _eq);
 		};
 		const cookieValue = async function (c: string) {
-			let _a: any = await getCookies({});
+			let _a: Cookie[] | Cookie = await getCookies({});
 			_a = _a.filter((cookie: any) => {
 				const { name } = cookie;
 				return name == cookieName(c);
