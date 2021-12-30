@@ -36,7 +36,7 @@ function getWhere({
 
 export async function openDB({ path }: DBPath) {
     const db = await open({
-        filename: path,
+        filename: `${path}`,
         driver: sqlite3.Database
     })
     return db;
@@ -54,7 +54,7 @@ export async function select(db: any, {
     })().trim();
     let result: any = await db.all(cmd);
     if (filter) {
-        result = result.filter((_) => filter(_))
+        result = result.filter((_: any) => filter(_))
     }
     return result;
 }

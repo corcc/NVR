@@ -9,5 +9,5 @@ import {
 export function readHarFile({
     path
 }: Path): string {
-    return readFileSync(path).toString();
+    return readFileSync(`${path}`).toString();
 }

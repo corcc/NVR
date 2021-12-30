@@ -34,6 +34,9 @@ export async function setCookies({
     db = await openDB({
         path
     });
+    if(typeof cookies == 'undefined'){
+        throw new Error();
+    }
     let result = cookies.map(async (cookie: Cookie): Promise<Cookie[]> => {
         const options = {
             table: 'moz_cookies',
