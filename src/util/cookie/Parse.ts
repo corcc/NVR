@@ -1,11 +1,11 @@
-import { Cookie } from "../type";
+import { Cookie } from '../type';
 
-export function parseCookie({
-    name,
-    value
+export function parseCookie ({
+	name,
+	value
 }: Cookie): Cookie {
-    return {
-        name,
-        value
-    };
+	return {
+		name,
+		value
+	};
 }

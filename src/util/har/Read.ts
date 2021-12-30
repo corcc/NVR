@@ -1,13 +1,13 @@
 import {
-    readFileSync
+	readFileSync
 } from 'fs';
 
 import {
-    Path
+	Path
 } from '../type';
 
-export function readHarFile({
-    path
+export function readHarFile ({
+	path
 }: Path): string {
-    return readFileSync(`${path}`).toString();
+	return readFileSync(`${path}`).toString();
 }
