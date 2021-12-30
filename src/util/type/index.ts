@@ -1,4 +1,9 @@
 
+export type ReservationEnv = {
+	orgCd?: string | number | bigint;
+	sid?: string | number | bigint;
+}
+
 export type Json = {
 	[x: string]: string | Json | number | bigint;
 }
@@ -22,8 +27,14 @@ export type DBSelect = {
 export type Cookie = {
 	name: string;
 	value: string;
+	host?: string;
 	domain?: string;
 }
+export type Header = {
+	name: string;
+	value: string;
+}
+
 export type CookiesParam = {
 	cookies?: Array<Cookie>;
 	filter?: Function;

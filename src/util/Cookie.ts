@@ -5,7 +5,10 @@ import { Cookie, CookiesParam } from './type';
 
 let db: Database | Promise<Database>;
 const cookieFilter = {
-	naver: function (cookie: any) {
+	naver: function (cookie: Cookie) {
+		if (typeof cookie.host == 'undefined') {
+			throw new Error();
+		}
 		return cookie.host.match(/.*n*aver*/);
 	}
 };
@@ -23,7 +26,6 @@ export async function getCookies ({
 	};
 	let result = await selectDB(db, options);
 	result = result.map((c: any): Cookie => parseCookie(c));
-	console.log(result);
 	return result;
 }
 
@@ -48,7 +50,7 @@ export async function setCookies ({
 			}
 		};
 		const result = await updateDB(db, options);
-		const ca: Cookie[] = result.map((c: any): Cookie => parseCookie(c));
+		const ca: Cookie[] = result.map(async (c: any): Promise<Cookie> => await parseCookie(c));
 		return ca;
 	});
 	return result[result.length];

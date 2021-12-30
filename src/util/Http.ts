@@ -4,6 +4,8 @@ export async function request (options: any) {
 	return await new Promise((resolve, reject) => {
 		let body = '';
 		const req = https.request(options, (res: any) => {
+			console.log(`URL: ${options.path}`);
+			console.log(`LOCATION: ${res.headers.location}`);
 			console.log(`statusCode: ${res.statusCode}`);
 			res.on('data', (d: any) => {
 				body += d;
@@ -14,6 +16,7 @@ export async function request (options: any) {
 			});
 		});
 		req.on('error', (error: any) => {
+			console.error(`URL: ${options.path}`);
 			console.error(error);
 			reject(error);
 		});

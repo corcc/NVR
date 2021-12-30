@@ -20,6 +20,5 @@ export function getCookiePath () {
         const full: path = resolve(join(firefoxPrefix, dir));
         return full;
 	})();
-	console.warn(`Cookie Path: ${devEditionDefaultPath}/cookies.sqlite`);
 	return `${devEditionDefaultPath}/cookies.sqlite`;
 }

@@ -5,6 +5,7 @@ import {
 } from './har';
 import { URL } from 'url';
 import {
+	Header,
 	Json,
 	Path
 } from './type';
@@ -35,9 +36,9 @@ export function filterByReqUrl (harEntries: any, url: string): any {
 export function parseRequest (request: any) {
 	const fe = Object.fromEntries;
 	const oe = Object.entries;
-	const parseHeaders = function (headers: any) {
+	const parseHeaders = function (headers: Array<Header>) {
 		if (headers instanceof Array) {
-			const _h: any = headers.map((header: any): any => {
+			const _h: Array<Array<string>> = headers.map((header: Header): Array<string> => {
 				const { name, value } = header;
 				return [name, value];
 			});
@@ -46,7 +47,7 @@ export function parseRequest (request: any) {
 		throw new Error();
 	};
 	let url: any;
-	let _e = Object.entries(request).filter(([k, v]: any) => {
+	let _e = oe(request).filter(([k, v]: Array<any>) => {
 		if (k == 'url') {
 			url = new URL(v);
 		}
@@ -60,20 +61,24 @@ export function parseRequest (request: any) {
 	});
 	_e = oe((function () {
 		const _d: any = fe(_e);
-		_d.hostname = url.hostname;
-		_d.path = (url.pathname) + (url.search);
-		_d.port = url.port
-			? url.port
-			: (function () {
-				switch (url.protocol) {
-				case 'https:': return 443;
-				case 'http:': return 80;
-				}
-				throw new Error();
-			})();
+		try {
+			_d.hostname = url.hostname;
+			_d.path = (url.pathname) + (url.search);
+			_d.port = url.port
+				? url.port
+				: (function () {
+					switch (url.protocol) {
+					case 'https:': return 443;
+					case 'http:': return 80;
+					}
+					throw new Error();
+				})();
+		} catch (e) {
+			return _d;
+		}
 		return _d;
 	})());
-	_e = _e.map(([k, v]) => {
+	_e = _e.map(([k, v]: Array<any>) => {
 		if (k == 'headers') {
 			return [k, parseHeaders(v)];
 		}
