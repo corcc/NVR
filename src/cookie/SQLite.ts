@@ -61,11 +61,11 @@ async function select(db: any, {
         const __from = ` FROM ${from || '*'} `;
         return __select + __from;
     })().trim();
-    const result: any = await db.all(cmd);
-    const filteredResult: any = result.filter((_: any) => ((filter ?? function (f: any) {
-        return true;
-    })(_)));
-    return filteredResult;
+    let result: any = await db.all(cmd);
+    if (filter) {
+        result = result.filter((_) => filter(_))
+    }
+    return result;
 }
 
 
@@ -82,7 +82,7 @@ async function update(db: any, {
         const __where = getWhere({ where });
         return `UPDATE ` + __table + __set + __where;
     })().trim();
-    const _exec: string = await db.all(cmd);
+    const _exec: any = await db.all(cmd);
     return _exec;
 }
 
