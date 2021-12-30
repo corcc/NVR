@@ -1,28 +1,11 @@
 import sqlite3 from 'sqlite3';
 import { open } from 'sqlite';
-type Path = {
-    path: string
-}
-async function openDB({ path }: Path) {
-    const db = await open({
-        filename: path,
-        driver: sqlite3.Database
-    })
-    return db;
-}
 
-type Json = {
-    [x: string]: string | Json;
-}
-
-type Select = {
-    select?: string;
-    set?: Json;
-    table?: string;
-    from?: string;
-    where?: Json | string;
-    filter?: Function;
-}
+import {
+    Json,
+    DBPath,
+    DBSelect
+} from '../type';
 
 function getTypeOfJson(w: any) {
     return typeof JSON.parse(JSON.stringify(w));
@@ -39,7 +22,7 @@ function getWhereFromJson(where: Json): string {
 
 function getWhere({
     where
-}: Select): string {
+}: DBSelect): string {
     const whereType = getTypeOfJson(where);
     switch (whereType) {
         case 'object': return (function (w) {
@@ -51,11 +34,19 @@ function getWhere({
     }
 }
 
-async function select(db: any, {
+export async function openDB({ path }: DBPath) {
+    const db = await open({
+        filename: path,
+        driver: sqlite3.Database
+    })
+    return db;
+}
+
+export async function select(db: any, {
     select,
     from,
     filter
-}: Select) {
+}: DBSelect) {
     const cmd = (function () {
         const __select = ` SELECT ${select || '*'} `;
         const __from = ` FROM ${from || '*'} `;
@@ -69,11 +60,11 @@ async function select(db: any, {
 }
 
 
-async function update(db: any, {
+export async function update(db: any, {
     table,
     set,
     where
-}: Select) {
+}: DBSelect) {
     const cmd = (function () {
         const __table = table;
         const __set: any = Object.entries(set ?? { "": "" }).map(([k, v]): string => {
@@ -85,5 +76,3 @@ async function update(db: any, {
     const _exec: any = await db.all(cmd);
     return _exec;
 }
-
-export { Path as DBPath, Select as DBSelect, select, update, openDB }

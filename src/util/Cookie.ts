@@ -1,51 +1,33 @@
 import { Database } from 'sqlite';
-import { DBPath, DBSelect, selectDB, updateDB, openDB, getCookiePath } from './cookie';
-
-type GetCookieParams = {
-    filter?: Function
-}
-
-type Cookie = {
-    name: string;
-    value: string;
-    domain?: string;
-}
-type Cookies = Array<Cookie>;
-
-type CookiesParam = {
-    cookies: Array<Cookie>
-}
+import { selectDB, updateDB, openDB, getCookiePath } from './cookie';
+import { parseCookie } from './cookie/Parse';
+import { Cookie, CookiesParam } from './type';
 
 var db: Database | Promise<Database>;
 const cookieFilter = {
     'naver': function (cookie: any) {
         return cookie['host'].match(/.*n*aver*/);
     }
-}
+};
 
-async function getCookies({
+export async function getCookies({
     filter
-}: GetCookieParams): Promise<Cookie[]> {
+}: CookiesParam): Promise<Cookie[]> {
     const path = getCookiePath();
     db = await openDB({
         path
     });
-    let result = await selectDB(db, {
+    const options = {
         from: 'moz_cookies',
         filter: filter ?? cookieFilter['naver']
-    })
-    result = result.map((c: any): Cookie => {
-        const { name, value } = c;
-        return {
-            name,
-            value
-        }
-    })
+    };
+    let result = await selectDB(db, options);
+    result = result.map((c: any): Cookie => parseCookie(c));
     console.log(result);
     return result;
 }
 
-async function setCookies({
+export async function setCookies({
     cookies
 }: CookiesParam): Promise<Cookie[]> {
     const path = getCookiePath();
@@ -53,7 +35,7 @@ async function setCookies({
         path
     });
     let result = cookies.map(async (cookie: Cookie): Promise<Cookie[]> => {
-        const result = await updateDB(db, {
+        const options = {
             table: 'moz_cookies',
             set: {
                 'value': cookie['value']
@@ -61,17 +43,10 @@ async function setCookies({
             where: {
                 'name': cookie['name']
             }
-        });
-        const ca: Cookie[] = result.map((c: any): Cookie => {
-            const { name, value } = c;
-            return {
-                name,
-                value
-            };
-        });
+        };
+        const result = await updateDB(db, options);
+        const ca: Cookie[] = result.map((c: any): Cookie => parseCookie(c));
         return ca;
     })
     return result[result.length];
 }
-
-export { getCookies, setCookies }
