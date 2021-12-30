@@ -1,9 +1,9 @@
-import Url from 'url';
 import {
 	getHarPath,
 	readHarFile,
 	parseHar
 } from './har';
+import { URL } from 'url';
 import {
 	Json,
 	Path
@@ -48,7 +48,7 @@ export function parseRequest (request: any) {
 	let url: any;
 	let _e = Object.entries(request).filter(([k, v]: any) => {
 		if (k == 'url') {
-			url = Url.parse(v);
+			url = new URL(v);
 		}
 		switch (k) {
 		case 'headersSize': return false;
