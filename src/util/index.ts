@@ -10,6 +10,9 @@ export {
 	useCookiesFromBrowser
 } from './Har';
 export {
+	saveCookiesFromResponse
+} from './Response';
+export {
 	getEnv
 } from './Env';
 export {
