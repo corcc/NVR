@@ -16,7 +16,7 @@ function getWhereFromJson (where: Json): string {
 		throw new Error();
 	}
 	return Object.entries(where).map(([k, v]): string => {
-		return ` WHERE '${k}' = '${v}' `;
+		return ` WHERE ${k} = '${v}' `;
 	}).join('');
 }
 
@@ -37,6 +37,7 @@ function getWhere ({
 export async function openDB ({ path }: DBPath) {
 	const db = await open({
 		filename: `${path}`,
+		mode: sqlite3.OPEN_READWRITE,
 		driver: sqlite3.Database
 	});
 	return db;
@@ -67,11 +68,10 @@ export async function update (db: any, {
 	const cmd = (function () {
 		const __table = table;
 		const __set: any = Object.entries(set ?? { '': '' }).map(([k, v]): string => {
-			return ` SET '${k}' = '${v}' `;
+			return ` SET ${k} = '${v}' `;
 		}).join('');
 		const __where = getWhere({ where });
 		return 'UPDATE ' + __table + __set + __where;
 	})().trim();
-	const _exec: any = await db.all(cmd);
-	return _exec;
+	await db.run(cmd);
 }
