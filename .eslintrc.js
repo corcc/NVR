@@ -14,7 +14,7 @@ module.exports = {
 		'@typescript-eslint'
 	],
 	rules: {
-		indent: [2, 'tab'],
+		indent: ['error', 'tab'],
 		quotes: [2, 'single'],
 		semi: [2, 'always'],
 		'no-tabs': 0,
