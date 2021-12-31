@@ -31,7 +31,7 @@ export async function getCookies ({
 
 export async function setCookies ({
 	cookies
-}: CookiesParam): Promise<Cookie[]> {
+}: CookiesParam) {
 	const path = getCookiePath();
 	db = await openDB({
 		path
@@ -39,7 +39,7 @@ export async function setCookies ({
 	if (typeof cookies === 'undefined') {
 		throw new Error();
 	}
-	const result = cookies.map(async (cookie: Cookie): Promise<Cookie[]> => {
+	const result = await cookies.map(async (cookie: Cookie) => {
 		const options = {
 			table: 'moz_cookies',
 			set: {
@@ -49,9 +49,12 @@ export async function setCookies ({
 				name: cookie.name
 			}
 		};
-		const result = await updateDB(db, options);
-		const ca: Cookie[] = result.map(async (c: any): Promise<Cookie> => await parseCookie(c));
-		return ca;
+		await updateDB(db, options);
+		let result: any = await getCookies({});
+		result = result.filter((c:any) => {
+			return c.name == cookie.name;
+		});
+		return result;
 	});
-	return result[result.length];
+	return result;
 }
