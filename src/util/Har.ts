@@ -5,10 +5,12 @@ import {
 } from './har';
 import { URL } from 'url';
 import {
+	Cookie,
 	Header,
 	Json,
 	Path
 } from './type';
+import { getCookies } from './Cookie';
 
 export function readHar ({
 	path
@@ -85,4 +87,29 @@ export function parseRequest (request: any) {
 		return [k, v];
 	});
 	return fe(_e);
+}
+
+export async function useCookiesFromBrowser (req: any) {
+	let _cookie = req.headers.Cookie.split('; ').map(async (cookieStr: string): Promise<string> => {
+		// Use Cookies From Browser
+		const _eq = cookieStr.indexOf('=');
+		const cookieName = function (c: string) {
+			return c.substring(0, _eq);
+		};
+		const cookieValue = async function (c: string) {
+			let _a: Cookie[] | Cookie = await getCookies({});
+			_a = _a.filter((cookie: any) => {
+				const { name } = cookie;
+				return name == cookieName(c);
+			})[0];
+			const { value } = _a;
+			return value;
+		};
+		const name = cookieName(cookieStr);
+		const value = await cookieValue(cookieStr);
+		return [name, value].join('=');
+	});
+	_cookie = await Promise.all(_cookie);
+	req.headers.Cookie = _cookie.join('; ');
+	return req;
 }

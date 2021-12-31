@@ -6,7 +6,8 @@ export {
 	readHar,
 	getEntries,
 	filterByReqUrl,
-	parseRequest
+	parseRequest,
+	useCookiesFromBrowser
 } from './Har';
 export {
 	getEnv
