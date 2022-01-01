@@ -1,5 +1,21 @@
 {
+  "name": "@corcc/nvr",
+  "version": "v0.0.0",
+  "author": {
+    "name": "TaYaKi71751",
+    "url": "https://github.com/TaYaKi71751"
+  },
+  "bugs": {
+    "url": "https://github.com/corcc/NVR/issues"
+  },
+  "repository": {
+    "url": "https://github.com/corcc/NVR"
+  },
+  "main": "dist/index.js",
   "scripts": {
+    "tsc": "tsc",
+    "dist": "tsc",
+    "auth": "ts-node lib/Auth.ts",
     "eslint-ts-fix": "eslint --fix --ext .ts",
     "eslint": "eslint --ext .ts ."
   },
@@ -8,6 +24,7 @@
     "@types/sqlite3": "^3.1.8",
     "sqlite": "^4.0.23",
     "sqlite3": "^5.0.2",
+    "tar": ">=4.4.18",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.4"
   },

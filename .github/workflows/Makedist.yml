@@ -1,0 +1,27 @@
+name: Build and Deploy
+on: 
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - '**.md'
+jobs:
+  install:
+    # name: Install 🟢
+    name: Install 🟢 & Build 🔧 & Deploy 🚀
+    runs-on: ubuntu-latest
+    steps:
+    - name: Setup Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: 'lts/*'
+    - name: Checkout 🛎️
+      uses: actions/checkout@master
+    - name: Install 🟢
+      run: npm install
+    - name: Build 🔧 with unset CI
+      run: rm -rf build && unset CI && npm run dist
+    - uses: corcc/publish@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        TASK_NAME: 'Autobuild dist'
+        TIMEZONE: 'Asia/Tokyo'
