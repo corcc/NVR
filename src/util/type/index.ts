@@ -4,6 +4,12 @@ export type ReservationEnv = {
 	sid?: string | number | bigint;
 }
 
+export type AuthEnv = {
+	key: string;
+}
+
+export { AuthEnv as InfoEnv };
+
 export type Json = {
 	[x: string]: string | Json | number | bigint;
 }
