@@ -1,3 +1,3 @@
-export { auth } from './src/Auth';
-export { info } from './src/Info';
-export { standby } from './src/Standby';
+export { auth } from './lib/Auth';
+export { info } from './lib/Info';
+export { standby } from './lib/Standby';
