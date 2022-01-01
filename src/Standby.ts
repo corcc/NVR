@@ -4,9 +4,9 @@ import {
 	filterByReqUrl,
 	parseRequest,
 	request,
-	useCookiesFromBrowser
+	useCookiesFromBrowser,
+	saveCookiesFromResponse
 } from './util';
-import { saveCookiesFromResponse } from './util/Response';
 import {
 	Json,
 	ReservationEnv
@@ -27,7 +27,7 @@ export async function standby ({
 	return res;
 }
 
-standby({
-	orgCd: process.env.orgCd,
-	sid: process.env.sid
-});
+// standby({
+// 	orgCd: process.env.orgCd,
+// 	sid: process.env.sid
+// });
