@@ -13,13 +13,16 @@
   },
   "main": "dist/index.js",
   "scripts": {
+    "standby": "ts-node lib/StandBy.ts",
+    "auth": "ts-node lib/Auth.ts",
+    "info": "ts-node lib/Info.ts",
     "tsc": "tsc",
     "dist": "tsc",
-    "auth": "ts-node lib/Auth.ts",
     "eslint-ts-fix": "eslint --fix --ext .ts",
     "eslint": "eslint --ext .ts ."
   },
   "dependencies": {
+    "@types/har-format": "^1.2.8",
     "@types/node": "^17.0.5",
     "@types/sqlite3": "^3.1.8",
     "sqlite": "^4.0.23",
