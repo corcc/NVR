@@ -2,12 +2,14 @@ name: Build and Deploy
 on: 
   workflow_dispatch:
   push:
+    branches:
+      - node-typescript
     paths-ignore:
       - '**.md'
 jobs:
   install:
     # name: Install 🟢
-    name: Install 🟢 & Build 🔧 & Deploy 🚀
+    name: Install 🟢 & Build 🔧
     runs-on: ubuntu-latest
     steps:
     - name: Setup Node
@@ -24,4 +26,6 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         TASK_NAME: 'Autobuild dist'
+        FORCE: true
+        BRANCH_NAME: 'node-package'
         TIMEZONE: 'Asia/Tokyo'
