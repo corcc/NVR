@@ -18,8 +18,8 @@ jobs:
       uses: actions/checkout@master
     - name: Install 🟢
       run: npm install
-    - name: Build 🔧 with unset CI
-      run: rm -rf build && unset CI && npm run dist
+    - name: Build dist 🔧
+      run: rm -rf build && npm run dist
     - uses: corcc/publish@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
