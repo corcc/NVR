@@ -11,22 +11,24 @@ import {
 	Path
 } from './type';
 import { getCookies } from './Cookie';
+import { ClientRequest } from 'http';
+import { Entry, Har, Request } from 'har-format';
 
 export function readHar ({
 	path
-}: Path): Json {
-	let har: string | Json = path ?? getHarPath();
+}: Path): Har {
+	let har: string | Har = path ?? getHarPath();
 	har = readHarFile({
 		path: har
 	});
 	har = parseHar({ har });
 	return har;
 }
-export function getEntries (har: any): any {
+export function getEntries (har: Har): Entry[] {
 	return har.log.entries;
 }
 
-export function filterByReqUrl (harEntries: any, url: string): any {
+export function filterByReqUrl (harEntries: Entry[], url: string): Entry[] {
 	if (harEntries instanceof Array) {
 		return harEntries.filter((harEntry: any) => {
 			return harEntry?.request?.url?.includes(url) ?? false;
@@ -35,10 +37,10 @@ export function filterByReqUrl (harEntries: any, url: string): any {
 	throw new Error();
 }
 
-export function parseRequest (request: any) {
+export function parseRequest (request: Request): any | ClientRequest | Request {
 	const fe = Object.fromEntries;
 	const oe = Object.entries;
-	const parseHeaders = function (headers: Array<Header>) {
+	const parseHeaders = function (headers: Array<Header>): Json {
 		if (headers instanceof Array) {
 			const _h: Array<Array<string>> = headers.map((header: Header): Array<string> => {
 				const { name, value } = header;
@@ -89,7 +91,7 @@ export function parseRequest (request: any) {
 	return fe(_e);
 }
 
-export async function useCookiesFromBrowser (req: any) {
+export async function useCookiesFromBrowser (req: any | ClientRequest): Promise<ClientRequest> {
 	let _cookie = req.headers.Cookie.split('; ').map(async (cookieStr: string): Promise<string> => {
 		// Use Cookies From Browser
 		const _eq = cookieStr.indexOf('=');

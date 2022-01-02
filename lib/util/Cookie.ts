@@ -51,7 +51,7 @@ export async function setCookies ({
 		};
 		await updateDB(db, options);
 		let result: any = await getCookies({});
-		result = result.filter((c:any) => {
+		result = result.filter((c: any) => {
 			return c.name == cookie.name;
 		});
 		return result;

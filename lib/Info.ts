@@ -5,13 +5,16 @@ import {
 	parseRequest,
 	request,
 	useCookiesFromBrowser,
-	saveCookiesFromResponse
+	saveCookiesFromResponse,
+	lightResponse
 } from './util';
 import { URL } from 'url';
 import {
-	Json,
-	InfoEnv
+	InfoEnv,
+	LightResponse
 } from './util/type';
+import { ClientRequest } from 'http';
+import { Har } from 'har-format';
 
 function getUrl ({
 	url,
@@ -39,11 +42,11 @@ function getUrl ({
 
 export async function info ({
 	key
-}: InfoEnv): Promise<any> {
-	const har: Json = readHar({});
+}: InfoEnv): Promise<LightResponse> {
+	const har: Har = readHar({});
 	const harEntries = getEntries(har);
 	const infoEntry = filterByReqUrl(harEntries, '/info')[0];
-	let infoRequest = infoEntry.request;
+	let infoRequest: any | Request | ClientRequest = infoEntry.request;
 	infoRequest.url = getUrl({
 		url: infoRequest.url,
 		params: {
@@ -55,7 +58,7 @@ export async function info ({
 	// TODO : Use Cookies from Browser => Clean Code
 	const res = await request(infoRequest);
 	await saveCookiesFromResponse(res);
-	return res;
+	return lightResponse(res);
 }
 
 // info({

@@ -49,3 +49,20 @@ export type CookiesParam = {
 export type HarString = {
 	har: string;
 }
+
+export type Headers = {
+	[x: string]: string;
+}
+
+export type Location = URL & {
+	params: {
+		[x: string]: string;
+	}
+}
+
+export type LightResponse = {
+	responseCode: number;
+	headers: Headers
+	body: string;
+	location: Location
+}

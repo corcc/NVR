@@ -1,9 +1,9 @@
+import { Har } from 'har-format';
 import {
-	HarString,
-	Json
+	HarString
 } from '../type';
 export function parseHar ({
 	har
-}: HarString): Json {
+}: HarString): Har {
 	return JSON.parse(har);
 }

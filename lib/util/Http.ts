@@ -1,6 +1,7 @@
-const https = require('https');
+import { ClientRequest, ServerResponse } from 'http';
 
-export async function request (options: any) {
+const https = require('https');
+export async function request (options: ClientRequest): Promise<any | ServerResponse> {
 	return await new Promise((resolve, reject) => {
 		let body = '';
 		const req = https.request(options, (res: any) => {

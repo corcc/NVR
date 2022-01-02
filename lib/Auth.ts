@@ -5,46 +5,25 @@ import {
 	parseRequest,
 	request,
 	useCookiesFromBrowser,
-	saveCookiesFromResponse
+	saveCookiesFromResponse,
+	lightResponse,
+	getUrlWithParams
 } from './util';
-import { URL } from 'url';
 import {
-	Json,
-	AuthEnv
+	AuthEnv,
+	LightResponse
 } from './util/type';
-
-function getUrl ({
-	url,
-	params
-}: {
-	url: string;
-	params: any;
-}): string {
-	const _url = (function (_u: string) {
-		const {
-			protocol,
-			hostname,
-			pathname
-		} = new URL(_u);
-		const _a = `${protocol}//${hostname}${pathname}`;
-		return _a;
-	})(url);
-
-	return `${_url}` + (params
-		? ('?' + Object.entries(params).map(([k, v]) => {
-			return [k, v].join('=');
-		}).join('&'))
-		: '');
-}
+import { Har } from 'har-format';
+import { ClientRequest } from 'http';
 
 export async function auth ({
 	key
-}: AuthEnv): Promise<any> {
-	const har: Json = readHar({});
+}: AuthEnv): Promise<LightResponse> {
+	const har: Har = readHar({});
 	const harEntries = getEntries(har);
 	const authEntry = filterByReqUrl(harEntries, '/auth')[0];
-	let authRequest = authEntry.request;
-	authRequest.url = getUrl({
+	let authRequest: any | Request | ClientRequest = authEntry.request;
+	authRequest.url = getUrlWithParams({
 		url: authRequest.url,
 		params: {
 			key
@@ -55,7 +34,7 @@ export async function auth ({
 	// TODO : Use Cookies from Browser => Clean Code
 	const res = await request(authRequest);
 	await saveCookiesFromResponse(res);
-	return res;
+	return lightResponse(res);
 }
 
 // auth({
