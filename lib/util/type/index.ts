@@ -54,7 +54,7 @@ export type Headers = {
 	[x: string]: string;
 }
 
-export type Location = URL & {
+export type Location = string | URL & {
 	params: {
 		[x: string]: string;
 	}
@@ -64,5 +64,5 @@ export type LightResponse = {
 	responseCode: number;
 	headers: Headers
 	body: string;
-	location: Location
+	location?: Location
 }

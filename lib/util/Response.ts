@@ -29,11 +29,13 @@ export function lightResponse(res: any | ServerResponse): LightResponse {
 	}: any = res;
 	let { location } = headers;
 	location = location ? new URL(location) : location;
-	location.params = getParsedSearchParams(location);
+	if (location) {
+		location.params = getParsedSearchParams(location);
+	}
 	return {
 		responseCode: responseCode ?? statusCode,
 		headers,
 		body,
-		location
+		location: location ?? ''
 	};
 }
