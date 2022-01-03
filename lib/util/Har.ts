@@ -14,7 +14,7 @@ import { getCookies } from './Cookie';
 import { ClientRequest } from 'http';
 import { Entry, Har, Request } from 'har-format';
 
-export function readHar ({
+export function readHar({
 	path
 }: Path): Har {
 	let har: string | Har = path ?? getHarPath();
@@ -24,11 +24,11 @@ export function readHar ({
 	har = parseHar({ har });
 	return har;
 }
-export function getEntries (har: Har): Entry[] {
+export function getEntries(har: Har): Entry[] {
 	return har.log.entries;
 }
 
-export function filterByReqUrl (harEntries: Entry[], url: string): Entry[] {
+export function filterByReqUrl(harEntries: Entry[], url: string): Entry[] {
 	if (harEntries instanceof Array) {
 		return harEntries.filter((harEntry: any) => {
 			return harEntry?.request?.url?.includes(url) ?? false;
@@ -37,13 +37,16 @@ export function filterByReqUrl (harEntries: Entry[], url: string): Entry[] {
 	throw new Error();
 }
 
-export function parseRequest (request: Request): any | ClientRequest | Request {
+export function parseRequest(request: Request): any | ClientRequest | Request {
 	const fe = Object.fromEntries;
 	const oe = Object.entries;
 	const parseHeaders = function (headers: Array<Header>): Json {
 		if (headers instanceof Array) {
 			const _h: Array<Array<string>> = headers.map((header: Header): Array<string> => {
-				const { name, value } = header;
+				let { name, value } = header;
+				if (name.includes('ccept')) {
+					value = value.replace('gzip,', '');
+				}
 				return [name, value];
 			});
 			return fe(_h);
@@ -56,11 +59,11 @@ export function parseRequest (request: Request): any | ClientRequest | Request {
 			url = new URL(v);
 		}
 		switch (k) {
-		case 'headersSize': return false;
-		case 'bodySize': return false;
-		case 'cookies': return false;
-		case 'url': return false;
-		default: return true;
+			case 'headersSize': return false;
+			case 'bodySize': return false;
+			case 'cookies': return false;
+			case 'url': return false;
+			default: return true;
 		}
 	});
 	_e = oe((function () {
@@ -72,8 +75,8 @@ export function parseRequest (request: Request): any | ClientRequest | Request {
 				? url.port
 				: (function () {
 					switch (url.protocol) {
-					case 'https:': return 443;
-					case 'http:': return 80;
+						case 'https:': return 443;
+						case 'http:': return 80;
 					}
 					throw new Error();
 				})();
@@ -91,7 +94,7 @@ export function parseRequest (request: Request): any | ClientRequest | Request {
 	return fe(_e);
 }
 
-export async function useCookiesFromBrowser (req: any | ClientRequest): Promise<ClientRequest> {
+export async function useCookiesFromBrowser(req: any | ClientRequest): Promise<ClientRequest> {
 	let _cookie = req.headers.Cookie.split('; ').map(async (cookieStr: string): Promise<string> => {
 		// Use Cookies From Browser
 		const _eq = cookieStr.indexOf('=');

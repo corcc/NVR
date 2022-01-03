@@ -28,7 +28,7 @@ export function lightResponse(res: any | ServerResponse): LightResponse {
 		body
 	}: any = res;
 	let { location } = headers;
-	location = new URL(location);
+	location = location ? new URL(location) : location;
 	location.params = getParsedSearchParams(location);
 	return {
 		responseCode: responseCode ?? statusCode,
