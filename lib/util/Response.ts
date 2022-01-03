@@ -4,7 +4,8 @@ import { Cookie, LightResponse } from './type';
 import { getParsedSearchParams } from './URL';
 
 export async function saveCookiesFromResponse(res: any | ServerResponse) {
-	await res.headers['set-cookie'].forEach(async (setCookie: string) => {
+	let setCookie = await res.headers['set-cookie'];
+	setCookie = await setCookie.map(async (setCookie: string) => {
 		const _setCookie: Cookie = (function (): Cookie {
 			const _setCookieStr: string = setCookie.split(';')[0];
 			const [name, value]: string[] = _setCookieStr.split('=');
@@ -18,6 +19,7 @@ export async function saveCookiesFromResponse(res: any | ServerResponse) {
 		});
 		return result;
 	});
+	return setCookie;
 }
 
 export function lightResponse(res: any | ServerResponse): LightResponse {
