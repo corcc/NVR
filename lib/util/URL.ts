@@ -1,9 +1,9 @@
 import { URL } from 'url';
 const fe = Object.fromEntries;
-export function getURL (url: string | URL) {
+export function getURL(url: string | URL) {
 	return url instanceof URL ? url : new URL(url);
 }
-export function getSearchParams (url: URL | string): string {
+export function getSearchParams(url: URL | string): string {
 	return (function (_u: URL) {
 		let { search } = _u;
 		search = (function (s: string) {
@@ -13,17 +13,17 @@ export function getSearchParams (url: URL | string): string {
 	})(getURL(url));
 }
 
-export function getParsedSearchParams ({
+export function getParsedSearchParams({
 	url,
 	search
 }: {
-    url?: string | URL;
-    search?: string;
+	url?: string | URL;
+	search?: string;
 }): {
-    [x: string]: string;
+	[x: string]: string;
 } {
 	const parse = function (s: string) {
-		const e = s.split('&').map((p: string) => {
+		const e = (s.startsWith('?') ? s.replace('?', '') : s).split('&').map((p: string) => {
 			const eq = p.indexOf('=');
 			const n = p.substring(0, eq);
 			const v = p.substring(eq + 1, p.length);
@@ -42,7 +42,7 @@ export function getParsedSearchParams ({
 	throw new Error();
 }
 
-export function getUrlWithParams ({
+export function getUrlWithParams({
 	url,
 	params
 }: {
