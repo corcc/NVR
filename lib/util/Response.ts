@@ -3,7 +3,7 @@ import { setCookies } from '.';
 import { Cookie, LightResponse } from './type';
 import { getParsedSearchParams } from './URL';
 
-export async function saveCookiesFromResponse (res: any | ServerResponse) {
+export async function saveCookiesFromResponse(res: any | ServerResponse) {
 	await res.headers['set-cookie'].forEach(async (setCookie: string) => {
 		const _setCookie: Cookie = (function (): Cookie {
 			const _setCookieStr: string = setCookie.split(';')[0];
@@ -20,8 +20,9 @@ export async function saveCookiesFromResponse (res: any | ServerResponse) {
 	});
 }
 
-export function lightResponse (res: any | ServerResponse): LightResponse {
+export function lightResponse(res: any | ServerResponse): LightResponse {
 	const {
+		statusCode,
 		responseCode,
 		headers,
 		body
@@ -30,7 +31,7 @@ export function lightResponse (res: any | ServerResponse): LightResponse {
 	location = new URL(location);
 	location.params = getParsedSearchParams(location);
 	return {
-		responseCode,
+		responseCode: responseCode ?? statusCode,
 		headers,
 		body,
 		location
