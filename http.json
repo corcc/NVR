@@ -1,0 +1,228 @@
+{
+    "/reservation": {
+        "/": {
+            "request": {
+                "method": "GET",
+                "url": {
+                    "params": {
+                        "orgCd": "number | bigint | string",
+                        "sid": "number | bigint | string"
+                    }
+                }
+            },
+            "response": {
+                "statusCode": [
+                    302,
+                    400
+                ],
+                "NavigateTo": [
+                    "!${LoginPage}",
+                    "/auth",
+                    "*"
+                ]
+            }
+        },
+        "/standby": {
+            "request": {
+                "method": "GET",
+                "url": {
+                    "params": {
+                        "orgCd": "number | bigint | string",
+                        "sid": "number | bigint | string"
+                    }
+                }
+            },
+            "response": {
+                "statusCode": [
+                    302,
+                    400
+                ],
+                "NavigateTo": [
+                    "!${LoginPage}",
+                    "/auth",
+                    "*"
+                ]
+            }
+        },
+        "/auth": {
+            "from": [
+                "/",
+                "/standby",
+                "/auth"
+            ],
+            "request": {
+                "method": "GET",
+                "referrer": [
+                    "/",
+                    "/standby"
+                ],
+                "url": {
+                    "params": {
+                        "key": "string"
+                    }
+                }
+            },
+            "response": {
+                "contentType": "application/html",
+                "statusCode": [
+                    302,
+                    200
+                ],
+                "NavigateTo": [
+                    "!${LoginPage}",
+                    "/info",
+                    "!${verifyPage = '/auth' => 200}",
+                    "*"
+                ]
+            }
+        },
+        "/info": {
+            "from": "/auth",
+            "request": {
+                "method": "GET",
+                "referrer": [
+                    "/auth"
+                ],
+                "url": {
+                    "params": {
+                        "key": "string"
+                    }
+                }
+            },
+            "response": {
+                "contentType": "application/html",
+                "statusCode": [
+                    302,
+                    200
+                ],
+                "NavigateTo": [
+                    "!${LoginPage}",
+                    "/info",
+                    "*"
+                ]
+            }
+        },
+        "/progress": {
+            "from": "/info",
+            "request": {
+                "contentType": "application/json",
+                "method": "POST",
+                "referrer": [
+                    "/info"
+                ],
+                "url": {
+                    "params": {
+                        "key": "string",
+                        "cd": "string"
+                    }
+                }
+            },
+            "response": {
+                "statusCode": [
+                    302,
+                    200
+                ],
+                "NavigateTo": [
+                    "!${LoginPage}",
+                    "/info",
+                    "*"
+                ]
+            }
+        },
+        "/confirm": {
+            "from": "/progress",
+            "request": {
+                "contentType": "application/json",
+                "method": "GET",
+                "referrer": "/progress",
+                "url": {
+                    "params": {
+                        "key": "string",
+                        "cd": "string"
+                    }
+                }
+            },
+            "response": {
+                "contentType": "application/json",
+                "statusCode": [
+                    302,
+                    200
+                ],
+                "body": {
+                    "?code": "string"
+                },
+                "NavigateTo": [
+                    "!${LoginPage}",
+                    "/success",
+                    "/failure&",
+                    "!/error",
+                    "*"
+                ]
+            }
+        },
+        "/success": {
+            "from": "/confirm",
+            "request": {
+                "method": "GET",
+                "referrer": "/progress",
+                "url": {
+                    "params": {
+                        "key": "string"
+                    }
+                }
+            },
+            "response": {
+                "statusCode": [
+                    302,
+                    200
+                ],
+                "NavigateTo": [
+                    "*"
+                ]
+            }
+        },
+        "/failure": {
+            "from": "/confirm",
+            "request": {
+                "method": "GET",
+                "referrer": "/progress",
+                "url": {
+                    "params": {
+                        "key": "string",
+                        "code": "string | number"
+                    }
+                }
+            },
+            "response": {
+                "statusCode": [
+                    302,
+                    200
+                ],
+                "NavigateTo": [
+                    "*"
+                ]
+            }
+        },
+        "/error": {
+            "from": "/confirm",
+            "request": {
+                "method": "GET",
+                "referrer": "/progress",
+                "url": {
+                    "params": {
+                        "key": "string"
+                    }
+                }
+            },
+            "response": {
+                "statusCode": [
+                    302,
+                    200
+                ],
+                "NavigateTo": [
+                    "*"
+                ]
+            }
+        }
+    }
+}
