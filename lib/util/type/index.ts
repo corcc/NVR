@@ -1,14 +1,28 @@
 
-export type ReservationEnv = {
+export type RequestParams = {
 	orgCd?: string | number | bigint;
 	sid?: string | number | bigint;
+	key?: string;
+	cd?: string;
+	code?: string;
 }
+// export type ReservationEnv = {
+// }
+// export type AuthEnv = {
+// 	key: string;
+// }
+// export type InfoEnv = AuthEnv;
+// export type ProgressEnv = InfoEnv & {
+// }
+// export type ConfirmEnv = InfoEnv;
+// export type SuccessEnv = InfoEnv;
+// export type FailureEnv = InfoEnv & {
+// }
+// export type ErrorEnv = InfoEnv;
 
-export type AuthEnv = {
-	key: string;
+export type RequestBody = {
+	body?: string;
 }
-
-export { AuthEnv as InfoEnv };
 
 export type Json = {
 	[x: string]: string | Json | number | bigint;
