@@ -40,6 +40,8 @@ export async function confirmRequest ({
 	});
 	req = parseRequest(req);
 	req.method = 'POST';
+	req.headers.Accept = 'application/json';
+	req.headers['Content-Type'] = 'application/json';
 	req.headers.referer = getProgressURL({
 		url,
 		params: {
