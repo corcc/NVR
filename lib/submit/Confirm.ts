@@ -34,7 +34,9 @@ export async function confirmRequest ({
 	const url = req.url.replace('/info', '/confirm');
 	req.url = getUrlWithParams({
 		url,
-		params: undefined
+		params: {
+			key
+		}
 	});
 	req = parseRequest(req);
 	req.method = 'POST';
