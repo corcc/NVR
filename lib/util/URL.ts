@@ -65,3 +65,30 @@ export function getUrlWithParams ({
 		}).join('&'))
 		: '');
 }
+
+export function getProgressURL ({
+	url,
+	params
+}: {
+	url: string;
+	params: any;
+}): string {
+	const _url = (function (_u: string) {
+		const {
+			protocol,
+			hostname,
+			pathname
+		} = new URL(_u);
+		const _a = `${protocol}//${hostname}${(function (p: string) {
+			const _s = p.lastIndexOf('/');
+			const _r = p.substring(_s, p.length);
+			const _a = p.replace(_r, '/progress');
+			return _a;
+		})(pathname)}`;
+		return _a;
+	})(url);
+	return getUrlWithParams({
+		url: _url,
+		params
+	});
+}

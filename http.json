@@ -52,7 +52,7 @@
             ],
             "request": {
                 "method": "GET",
-                "referrer": [
+                "referer": [
                     "/",
                     "/standby"
                 ],
@@ -80,7 +80,7 @@
             "from": "/auth",
             "request": {
                 "method": "GET",
-                "referrer": [
+                "referer": [
                     "/auth"
                 ],
                 "url": {
@@ -107,7 +107,7 @@
             "request": {
                 "contentType": "application/json",
                 "method": "POST",
-                "referrer": [
+                "referer": [
                     "/info"
                 ],
                 "url": {
@@ -134,7 +134,7 @@
             "request": {
                 "contentType": "application/json",
                 "method": "GET",
-                "referrer": "/progress",
+                "referer": "/progress",
                 "url": {
                     "params": {
                         "key": "string",
@@ -164,7 +164,7 @@
             "from": "/confirm",
             "request": {
                 "method": "GET",
-                "referrer": "/progress",
+                "referer": "/progress",
                 "url": {
                     "params": {
                         "key": "string"
@@ -185,7 +185,7 @@
             "from": "/confirm",
             "request": {
                 "method": "GET",
-                "referrer": "/progress",
+                "referer": "/progress",
                 "url": {
                     "params": {
                         "key": "string",
@@ -207,7 +207,7 @@
             "from": "/confirm",
             "request": {
                 "method": "GET",
-                "referrer": "/progress",
+                "referer": "/progress",
                 "url": {
                     "params": {
                         "key": "string"

@@ -5,7 +5,8 @@ import {
 	useCookiesFromBrowser,
 	saveCookiesFromResponse,
 	lightResponse,
-	getUrlWithParams
+	getUrlWithParams,
+	getProgressURL
 } from '../../util';
 import {
 	LightResponse,
@@ -24,17 +25,26 @@ import { ClientRequest } from 'http';
  */
 
 export async function successRequest ({
-	key
+	key,
+	cd
 }: RequestParams): Promise<LightResponse> {
 	const harEntry = await loadHarEntryByUrl('/info');
 	let req: any | Request | ClientRequest = harEntry.request;
+	const url = req.url.replace('/info', '/success');
 	req.url = getUrlWithParams({
-		url: req.url.replace('/info', '/success'),
+		url,
 		params: {
 			key
 		}
 	});
 	req = parseRequest(req);
+	req.headers.referer = getProgressURL({
+		url,
+		params: {
+			key,
+			cd
+		}
+	});
 	req = await useCookiesFromBrowser(req);
 	// TODO : Use Cookies from Browser => Clean Code
 	const res = await request(req);
