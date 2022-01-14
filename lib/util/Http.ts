@@ -1,19 +1,22 @@
 import { ClientRequest, ServerResponse } from 'http';
 import { RequestBody } from './type';
-
-const https = require('https');
+import https from 'https';
+type Body = any & Array<number> & string;
 export async function request (options: ClientRequest & RequestBody): Promise<any | ServerResponse> {
 	return await new Promise((resolve, reject) => {
-		let body = '';
+		let body: Body = [];
 		const req = https.request(options, (res: any) => {
 			console.log(`URL: ${options.path}`);
 			console.log(`LOCATION: ${res.headers.location}`);
 			console.log(`statusCode: ${res.statusCode}`);
-			res.on('data', (d: any) => {
-				body += d;
+			res.on('data', (chunk: Buffer) => {
+				chunk.forEach((x: number) => {
+					body.push(x);
+				});
 			});
 			res.on('end', () => {
-				res.body = body || undefined;
+				body = Buffer.from(body);
+				res.body = body.toString();
 				resolve(res);
 			});
 		});
