@@ -1,15 +1,10 @@
-name: Build and Deploy
+name: Build
 on: 
   workflow_dispatch:
   push:
-    branches:
-      - node-typescript
-    paths-ignore:
-      - '**.md'
 jobs:
   install:
-    # name: Install 🟢
-    name: Install 🟢 & Build 🔧
+    name: Build 🔧
     runs-on: ubuntu-latest
     steps:
     - run: git config --global init.defaultBranch node-typescript
@@ -20,13 +15,11 @@ jobs:
     - name: Checkout 🛎️
       uses: actions/checkout@master
     - name: Install 🟢
-      run: npm install
-    - name: Build dist 🔧
-      run: rm -rf build && npm run dist
+      run: yarn install
+    - name: Build 🔧
+      run: yarn build:tsc
     - uses: corcc/publish@master
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        TASK_NAME: 'Autobuild dist'
-        FORCE: true
-        BRANCH_NAME: 'dist'
+        TASK_NAME: 🔧
         TIMEZONE: 'Asia/Tokyo'
