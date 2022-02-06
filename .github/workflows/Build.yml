@@ -7,14 +7,21 @@ jobs:
     name: Build 🔧
     runs-on: ubuntu-latest
     steps:
-    - run: git config --global init.defaultBranch node-typescript
     - name: Setup Node
       uses: actions/setup-node@v2
       with:
         node-version: 'lts/*'
-    - name: Checkout 🛎️
-      uses: actions/checkout@master
-    - name: Install 🟢
+    - uses: actions/checkout@master
+    - id: node-cache
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: node_modules
+        key: ${{ runner.os }}-${{ github.repository }}-node-modules-${{ hashFiles('**/yarn.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-${{ github.repository }}-node-modules-
+    - if: steps.node-cache.outputs.cache-hit != 'true'
       run: yarn install
     - name: Build 🔧
       run: yarn build:tsc
