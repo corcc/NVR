@@ -5,13 +5,13 @@ import {
 	request,
 	useCookiesFromBrowser,
 	saveCookiesFromResponse,
-	lightResponse,
-	getUrlWithParams
+	lightResponse
 } from '../util';
 import {
 	LightResponse,
 	RequestParams
 } from '../util/type';
+import qs from 'querystring';
 
 /**
  * @params { orgCd,sid }
@@ -34,18 +34,26 @@ export async function standbyRequest ({
 	sid
 }: RequestParams): Promise<LightResponse> {
 	const harEntry = await loadHarEntryByUrl('/reservation');
-	let req: any | Request | ClientRequest = harEntry.request;
-	req.url = getUrlWithParams({
-		url: req.url,
-		params: {
-			orgCd,
-			sid
-		}
-	});
-	req = parseRequest(req);
-	req = await useCookiesFromBrowser(req);
+	let options: any | Request | ClientRequest = harEntry.request;
+	const url = new URL(options?.url);
+	const { host, protocol, pathname, search } = url;
+	const query = Object.assign(
+		qs.parse(search?.replace('?', '')),
+		{ orgCd, sid }
+	);
+	const path = [pathname, qs.stringify(query)]
+		.join('?');
+	options = Object.assign(
+		Object.fromEntries(
+			Object.entries(options)
+				.filter(([k, v]) => (k != 'url'))
+		),
+		{ host, protocol, path }
+	);
+	options = parseRequest(options);
+	options = await useCookiesFromBrowser(options);
 	// TODO : Use Cookies from Browser => Clean Code
-	const res = await request(req);
+	const res = await request(options);
 	await saveCookiesFromResponse(res);
 	return lightResponse(res);
 }

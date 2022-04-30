@@ -5,7 +5,6 @@ import {
 	useCookiesFromBrowser,
 	saveCookiesFromResponse,
 	lightResponse,
-	getUrlWithParams,
 	getProgressURL
 } from '../../util';
 import {
@@ -13,6 +12,7 @@ import {
 	RequestParams
 } from '../../util/type';
 import { ClientRequest } from 'http';
+import qs from 'querystring';
 
 /**
  *
@@ -29,25 +29,31 @@ export async function successRequest ({
 	cd
 }: RequestParams): Promise<LightResponse> {
 	const harEntry = await loadHarEntryByUrl('/info');
-	let req: any | Request | ClientRequest = harEntry.request;
-	const url = req.url.replace('/info', '/success');
-	req.url = getUrlWithParams({
-		url,
-		params: {
-			key
+	let options: any | Request | ClientRequest = harEntry.request;
+	const url = new URL(options?.url?.replace('/info', '/success'));
+	const { host, protocol, pathname, search } = url;
+	const query = Object.assign(
+		qs.parse(search?.replace('?', '')),
+		{ key }
+	);
+	const path = [pathname, qs.stringify(query)]
+		.join('?');
+	options = Object.assign(
+		Object.fromEntries(
+			Object.entries(options)
+				.filter(([k, v]) => (k != 'url'))
+		),
+		{ host, protocol, path }
+	);
+	options = parseRequest(options);
+	options = await useCookiesFromBrowser(options);
+	options.headers.referer = getProgressURL(
+		{
+			url: `${protocol}//${host}/${pathname}?${qs.stringify(query)}`,
+			params: { key, cd }
 		}
-	});
-	req = parseRequest(req);
-	req.headers.referer = getProgressURL({
-		url,
-		params: {
-			key,
-			cd
-		}
-	});
-	req = await useCookiesFromBrowser(req);
-	// TODO : Use Cookies from Browser => Clean Code
-	const res = await request(req);
+	);
+	const res = await request(options);
 	await saveCookiesFromResponse(res);
 	return lightResponse(res);
 }

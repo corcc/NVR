@@ -4,30 +4,38 @@ import {
 	request,
 	useCookiesFromBrowser,
 	saveCookiesFromResponse,
-	lightResponse,
-	getUrlWithParams
+	lightResponse
 } from '../util';
 import {
 	RequestParams,
 	LightResponse
 } from '../util/type';
 import { ClientRequest } from 'http';
+import qs from 'querystring';
 
 export async function infoRequest ({
 	key
 }: RequestParams): Promise<LightResponse> {
 	const harEntry = await loadHarEntryByUrl('/info');
-	let req: any | Request | ClientRequest = harEntry.request;
-	req.url = getUrlWithParams({
-		url: req.url,
-		params: {
-			key
-		}
-	});
-	req = parseRequest(req);
-	req = await useCookiesFromBrowser(req);
-	// TODO : Use Cookies from Browser => Clean Code
-	const res = await request(req);
+	let options: any | Request | ClientRequest = harEntry.request;
+	const url = new URL(options?.url);
+	const { host, protocol, pathname, search } = url;
+	const query = Object.assign(
+		qs.parse(search?.replace('?', '')),
+		{ key }
+	);
+	const path = [pathname, qs.stringify(query)]
+		.join('?');
+	options = Object.assign(
+		Object.fromEntries(
+			Object.entries(options)
+				.filter(([k, v]) => (k != 'url'))
+		),
+		{ host, protocol, path }
+	);
+	options = parseRequest(options);
+	options = await useCookiesFromBrowser(options);
+	const res = await request(options);
 	await saveCookiesFromResponse(res);
 	return lightResponse(res);
 }
